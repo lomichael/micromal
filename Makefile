@@ -1,30 +1,44 @@
-CC=gcc
-CFLAGS=-Iinclude -Wall
+CC := gcc
+CFLAGS := -Wall -g 
+LDFLAGS := 
 
-SRC_DIR=src
-OBJ_DIR=obj
-TEST_DIR=tests
+# Directories
+SRC_DIR := src
+ALGO_DIR := $(SRC_DIR)/algorithms
+CORE_DIR := $(SRC_DIR)/core
+UTILS_DIR := $(SRC_DIR)/utils
+TESTS_DIR := tests
+OBJ_DIR := obj
+BIN_DIR := bin
 
-LIB_SOURCES=$(wildcard $(SRC_DIR)/*.c)
-LIB_OBJECTS=$(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(LIB_SOURCES))
+# Files
+ALGO_SRCS := $(ALGO_DIR)/huffman/huffman.c
+CORE_SRCS := $(CORE_DIR)/main.c $(CORE_DIR)/buffer.c
+UTILS_SRCS := $(UTILS_DIR)/io.c $(UTILS_DIR)/log.c $(UTILS_DIR)/mem.c
+TESTS_SRCS := $(TESTS_DIR)/benchmarks/benchmark.c
 
-TEST_SOURCES=$(wildcard $(TEST_DIR)/*.c)
-TESTS=$(patsubst $(TEST_DIR)/%.c,%,$(TEST_SOURCES))
+# Objects
+OBJS := $(ALGO_SRCS:.c=.o) $(CORE_SRCS:.c=.o) $(UTILS_SRCS:.c=.o) $(TESTS_SRCS:.c=.o)
 
-all: $(TESTS)
+# Targets
+MICROMAL := $(BIN_DIR)/micromal
 
+# Rules
+all: $(MICROMAL)
+
+# Rule to create the main executable
+$(MICROMAL): $(MAIN_OBJS)
+	@mkdir -p $(@D)
+	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
+
+# Rule to create the object files
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
-	$(CC) $(CFLAGS) -c $< -o $@
+	@mkdir -p $(@D)
+	$(CC) $(CFLAGS) -c -o $@ $<
 
-%: $(TEST_DIR)/%.c $(LIB_OBJECTS)
-	$(CC) $(CFLAGS) $^ -o $@
-
-tests: $(TESTS)
-	@for test in $(TESTS); do \
-		./$$test; \
-	done
-
+# Rule to clean the project
 clean:
-	rm -rf $(OBJ_DIR)/*.o $(TESTS)
+	rm -rf $(OBJ_DIR) $(BIN_DIR)
 
-.PHONY: all clean tests
+# Phony targets
+.PHONY: all clean

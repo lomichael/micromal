@@ -1,47 +1,43 @@
 CC := gcc
-CFLAGS := -Wall -g 
+CFLAGS := -Wall -Wextra -O2
 LDFLAGS := 
 
 # Directories
 SRC_DIR := src
-ALGO_DIR := $(SRC_DIR)/algorithms
-CORE_DIR := $(SRC_DIR)/core
-UTILS_DIR := $(SRC_DIR)/utils
-TESTS_DIR := tests
-OBJ_DIR := obj
 BIN_DIR := bin
+OBJ_DIR := obj
+TESTS_DIR := tests
 
 # Files
-ALGO_SRCS := $(ALGO_DIR)/huffman/huffman.c
-CORE_SRCS := $(CORE_DIR)/main.c $(CORE_DIR)/buffer.c
-UTILS_SRCS := $(UTILS_DIR)/io.c $(UTILS_DIR)/log.c $(UTILS_DIR)/mem.c
-TESTS_SRCS := $(TESTS_DIR)/benchmarks/benchmark.c
+SRCS := $(wildcard $(SRC_DIR)/*.c) $(wildcard $(SRC_DIR)/core/*.c) $(wildcard $(SRC_DIR)/io/*.c) $(wildcard $(SRC_DIR)/buffer/*.c) $(wildcard $(SRC_DIR)/utils/*.c) $(wildcard $(SRC_DIR)/algorithms/*.c) $(wildcard $(SRC_DIR)/benchmarks/*.c) $(wildcard $(SRC_DIR)/tests/*.c)
+
 
 # Objects
-OBJS := $(ALGO_SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o) \
-		$(CORE_SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o) \
-		$(UTILS_SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o) \
-		$(TESTS_SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
+OBJS = $(SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 
 # Targets
-MICROMAL := $(BIN_DIR)/micromal
+MAIN := $(BIN_DIR)/micromal
 
 # Rules
-all: $(MICROMAL)
+all: build $(MAIN)
 
 # Rule to create the main executable
-$(MICROMAL): $(OBJS)
+$(MAIN): $(OBJS)
 	@mkdir -p $(@D)
-	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
+	$(CC) $(LDFLAGS) -o $@ $^
 
-# Rule to create the object files
+# Rule to compile source files into object files
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	@mkdir -p $(@D)
-	$(CC) $(CFLAGS) -c -o $@ $<
+	$(CC) $(CFLAGS) -c $< -o $@
+
+build:
+	@mkdir -p $(BIN_DIR)
+	@mkdir -p $(OBJ_DIR)
 
 # Rule to clean the project
 clean:
-	rm -rf $(OBJ_DIR) $(BIN_DIR)
+	@rm -rf $(BIN_DIR) $(OBJ_DIR)
 
 # Phony targets
-.PHONY: all clean
+.PHONY: all build clean

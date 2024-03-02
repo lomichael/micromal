@@ -1,2 +1,4 @@
-/tests/files
+/benchmarks/datasets
+.DS_Store
 /bin
+/obj

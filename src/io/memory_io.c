@@ -1,3 +1,11 @@
+/*
+Functions for operating on memory buffers, like reading and writing in memory for quick access.
+
+- Simple read and write functions operating on memory buffers.
+- Optimized memory operations that minimize copying for large data sets.
+- Support for memory-mapped files to efficiently handle large files.
+*/
+
 #include "../utils/mem.h"
 #include "../utils/log.h"
 

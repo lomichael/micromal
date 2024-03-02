@@ -1,5 +1,5 @@
-#include "src/core/buffer.h"
-#include "src/utils/mem.h"
+#include "../core/buffer.h"
+#include "../utils/mem.h"
 #include <stdlib.h>
 #include <string.h>
 
@@ -22,6 +22,7 @@ void buffer_alloc(Buffer *buffer, size_t size)
 // Function to free the buffer
 void buffer_free(Buffer *buffer)
 {
+
     free(buffer->data);
     buffer->data = NULL;
     buffer->size = 0;
@@ -39,17 +40,15 @@ void buffer_resize(Buffer *buffer, size_t new_size)
     buffer->size = new_size;
 }
 
-// Function to write data to the buffer
-void buffer_write(Buffer *buffer, const void *data, size_t size)
+// Function to append data to the buffer
+void buffer_append(Buffer *buffer, const void *data, size_t size)
 {
     size_t new_size = buffer->size + size;
-    buffer_resize(buffer, new_size);
-    memcpy(buffer->data + buffer->size - size, data, size);
-}
-
-// Function to copy data to the buffer
-void buffer_copy(Buffer *buffer, const void *data, size_t size)
-{
-    buffer_resize(buffer, size);
-    memcpy(buffer->data, data, size);
+    if (new_size > buffer->capacity)
+    {
+        buffer->capacity = new_size;
+        buffer->data = safe_realloc(buffer->data, buffer->capacity);
+    }
+    memcpy(buffer->data + buffer->size, data, size);
+    buffer->size = new_size;
 }

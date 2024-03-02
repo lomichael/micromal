@@ -18,7 +18,10 @@ UTILS_SRCS := $(UTILS_DIR)/io.c $(UTILS_DIR)/log.c $(UTILS_DIR)/mem.c
 TESTS_SRCS := $(TESTS_DIR)/benchmarks/benchmark.c
 
 # Objects
-OBJS := $(ALGO_SRCS:.c=.o) $(CORE_SRCS:.c=.o) $(UTILS_SRCS:.c=.o) $(TESTS_SRCS:.c=.o)
+OBJS := $(ALGO_SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o) \
+		$(CORE_SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o) \
+		$(UTILS_SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o) \
+		$(TESTS_SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 
 # Targets
 MICROMAL := $(BIN_DIR)/micromal
@@ -27,7 +30,7 @@ MICROMAL := $(BIN_DIR)/micromal
 all: $(MICROMAL)
 
 # Rule to create the main executable
-$(MICROMAL): $(MAIN_OBJS)
+$(MICROMAL): $(OBJS)
 	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
 

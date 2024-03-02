@@ -1,4 +1,7 @@
-#include "src/algorithms/huffman/huffman.h"
+#include "../algorithms/huffman/huffman.h"
+#include "../../tests/benchmarks/benchmark.h"
+#include <stdio.h>
+#include <string.h>
 
 int main(int argc, char *argv[])
 {
@@ -10,10 +13,11 @@ int main(int argc, char *argv[])
     }
 
     // Parse the algorithm argument
-    CompressionAlgorithm algorithm;
+    CompressionAlgorithm* algorithm;
     if (strcmp(argv[1], "huffman") == 0)
     {
-        algorithm = HuffmanAlgorithm;
+        // Pass the Huffman algorithm to the benchmark function
+        algorithm = &HuffmanAlgorithm;
     }
     else
     {

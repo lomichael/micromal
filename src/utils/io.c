@@ -1,8 +1,9 @@
-#include "utils/io.h"
+#include "../utils/io.h"
+#include "../utils/mem.h"
 #include <stdio.h>
 #include <stdlib.h>
 
-ssize_t read_file_to_buffer(const char *file_path, void **buffer)
+size_t read_file_to_buffer(const char *file_path, void **buffer)
 {
     FILE *file = fopen(file_path, "rb");
     if (!file)
@@ -12,7 +13,7 @@ ssize_t read_file_to_buffer(const char *file_path, void **buffer)
     size_t file_size = ftell(file);
     fseek(file, 0, SEEK_SET);
 
-    *buffer = malloc(file_size);
+    *buffer = safe_malloc(file_size);
     if (!*buffer)
     {
         fclose(file);
@@ -25,7 +26,7 @@ ssize_t read_file_to_buffer(const char *file_path, void **buffer)
     return read_size == file_size ? read_size : -1;
 }
 
-ssize_t write_buffer_to_file(const char *file_path, const void *buffer, size_t size)
+size_t write_buffer_to_file(const char *file_path, const void *buffer, size_t size)
 {
     FILE *file = fopen(file_path, "wb");
     if (!file)

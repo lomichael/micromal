@@ -1,4 +1,4 @@
-#include "utils/log.h"
+#include "../utils/log.h"
 
 void log_message(LogLevel level, const char *message)
 {
